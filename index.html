@@ -4,185 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anam & Nabeel's Nikkah</title>
-    <!-- Importing elegant fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
-        /* --- GLOBAL STYLES --- */
         body {
-            background-color: #e6e2df; /* Light grayish-purple background for the space outside the card */
+            background-color: #e6e2df;
             font-family: 'Montserrat', sans-serif;
             margin: 0;
-            padding: 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             color: #333;
         }
 
-        /* --- INVITATION CARD CONTAINER --- */
+        /* --- ENVELOPE WRAPPER --- */
+        .envelope-wrapper {
+            position: relative;
+            width: 350px;
+            height: 250px;
+            margin-top: 150px; /* Space for the card to slide up */
+            cursor: pointer;
+        }
+
+        /* Base envelope background */
+        .envelope-base {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #d4c5b9;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 1;
+        }
+
+        /* Front flaps of the envelope */
+        .envelope-base::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 125px 175px;
+            border-color: transparent #e6dacd #dfd0c1 #e6dacd;
+            border-radius: 0 0 8px 8px;
+            z-index: 3;
+        }
+
+        /* Top opening flap */
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 130px 175px 0 175px;
+            border-color: #c9b7a7 transparent transparent transparent;
+            transform-origin: top center;
+            transition: transform 0.6s ease-in-out, z-index 0.6s;
+            z-index: 4;
+        }
+
+        /* --- THE INVITATION CARD --- */
         .card {
-            background-color: #f8f7f2; /* Off-white/cream paper texture color */
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            overflow: hidden;
-            text-align: center;
-            padding-bottom: 50px;
-        }
-
-        /* --- HERO IMAGE SECTION --- */
-        .hero-section {
-            width: 100%;
-            padding: 40px 20px;
-            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); /* Subtle texture */
-            box-sizing: border-box;
-        }
-
-        .hero-photo {
-            width: 70%;
-            max-width: 300px;
+            position: absolute;
+            bottom: 5px;
+            left: 5%;
+            width: 90%;
+            height: 480px; /* Taller card that scrolls */
+            background-color: #f8f7f2;
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             border-radius: 4px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            /* Note: Add a floral border to your actual image in an editor like Canva before uploading */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow-y: auto;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s; /* Delays slide until flap opens */
         }
 
-        /* --- TYPOGRAPHY --- */
+        /* Custom Scrollbar for the card */
+        .card::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+        /* --- ANIMATION ON HOVER --- */
+        .envelope-wrapper:hover .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+        .envelope-wrapper:hover .card {
+            transform: translateY(-280px);
+            z-index: 5;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
         .script-title {
             font-family: 'Alex Brush', cursive;
-            font-size: 3.5rem;
-            margin: 10px 0 0 0;
+            font-size: 2.8rem;
+            margin: 0;
             color: #2c2c2c;
         }
-
         .subtitle {
             font-family: 'Playfair Display', serif;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             letter-spacing: 2px;
-            line-height: 1.6;
-            margin: 15px 20px;
+            line-height: 1.5;
+            margin: 10px 0;
             text-transform: uppercase;
         }
-
-        .date-small {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.9rem;
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 400;
-            margin: 30px 20px 20px;
-        }
-
         h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            margin-top: 25px;
             text-transform: uppercase;
-            margin-top: 40px;
         }
-
         p {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin: 10px 30px;
-            color: #444;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+        .divider {
+            width: 40px;
+            height: 1px;
+            background-color: #ccc;
+            margin: 20px auto;
         }
 
-        /* --- RSVP BUTTONS --- */
+        /* --- GOOGLE FORM RSVP BUTTONS --- */
         .rsvp-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 30px 20px;
+            gap: 10px;
+            margin: 20px 0;
         }
-
         .rsvp-btn {
             background: transparent;
             border: 1px solid #000;
-            padding: 12px 20px;
+            padding: 10px 15px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 1px;
+            font-size: 0.7rem;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 45%;
+            text-decoration: none;
+            color: #000;
         }
-
         .rsvp-btn:hover {
             background-color: #000;
             color: #fff;
-        }
-
-        /* --- DIVIDER --- */
-        .divider {
-            width: 50px;
-            height: 1px;
-            background-color: #ccc;
-            margin: 30px auto;
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
+    <div class="envelope-wrapper">
+        <div class="envelope-base"></div>
+        <div class="envelope-flap"></div>
         
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <!-- Replace the src link below with the path to your actual photo -->
-            <img src="https://via.placeholder.com/400" alt="Anam and Nabeel" class="hero-photo">
+        <div class="card">
             <h1 class="script-title">Save the Date</h1>
             <p class="subtitle">To celebrate the Nikkah of<br>Anam Ali and Nabeel Khan</p>
-            <p class="date-small">10 . 17 . 2026</p>
+            <p style="font-family: 'Playfair Display', serif;">10 . 17 . 2026</p>
+            
+            <div class="divider"></div>
+
+            <!-- Wired to your Google Form -->
+            <div class="rsvp-container">
+                <a href="https://forms.gle/pvfczdNPcHRor2WHA" target="_blank" class="rsvp-btn">Will Attend</a>
+                <a href="https://forms.gle/pvfczdNPcHRor2WHA" target="_blank" class="rsvp-btn">Will Not Attend</a>
+            </div>
+
+            <p>Welcome to our Nikkah! Join us at the Islamic Center of Melville from 2:30pm-3:30pm. Afterwards, join us as we celebrate at Shirazi restaurant from 5pm-11pm.</p>
+
+            <h3>Locations</h3>
+            <p><strong>Islamic Center of Melville</strong><br>118 Old East Neck Rd<br>Melville, NY 11747</p>
+            <p><strong>Shirazi Restaurant</strong><br>184-02 Horace Harding Expy<br>Fresh Meadows, NY 11365</p>
+
+            <h3>Details</h3>
+            <p><strong>For the Mosque -</strong> It is recommended that women wear a head scarf and dress modestly.</p>
+            <p><strong>At Shirazi,</strong> we will have valet parking available for everyone.</p>
+
+            <br><br>
         </div>
-
-        <div class="divider"></div>
-
-        <h2>Anam Ali and Nabeel Khan's Nikkah</h2>
-
-        <!-- RSVP Buttons -->
-        <div class="rsvp-container">
-            <button class="rsvp-btn" onclick="alert('RSVP form coming soon!')">Will Attend</button>
-            <button class="rsvp-btn" onclick="alert('RSVP form coming soon!')">Will Not Attend</button>
-        </div>
-
-        <h3>Hosted By</h3>
-        <p>Your Name</p>
-
-        <div class="divider"></div>
-
-        <p>Welcome to our Nikkah! Join us at the Islamic Center of Melville for the Nikkah from 2:30pm-3:30pm. Afterwards, join us as we celebrate at Shirazi restaurant from 5pm-11pm.</p>
-
-        <h3>Locations</h3>
-        <p>
-            <strong>Islamic Center of Melville</strong><br>
-            118 Old East Neck Rd<br>
-            Melville, NY 11747<br>
-            United States
-        </p>
-        <br>
-        <p>
-            <strong>Shirazi Restaurant</strong><br>
-            184-02 Horace Harding Expy<br>
-            Fresh Meadows, NY 11365<br>
-            United States
-        </p>
-
-        <h3>Date</h3>
-        <p>Saturday, October 17</p>
-
-        <h3>Details</h3>
-        <p><strong>For the Mosque -</strong> It is recommended that women wear a head scarf and dress modestly.</p>
-        <p><strong>At Shirazi,</strong> we will have valet parking available for everyone.</p>
-
-        <h3>Schedule</h3>
-        <p><strong>2:30pm - 3:30pm</strong><br>Nikkah at the Islamic Center of Melville</p>
-        <p><strong>5:00pm - 11:00pm</strong><br>Dinner at Shirazi</p>
-
     </div>
 
 </body>
