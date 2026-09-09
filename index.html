@@ -16,184 +16,271 @@
             align-items: center;
             min-height: 100vh;
             color: #333;
+            overflow-x: hidden;
         }
 
-        /* --- ENVELOPE WRAPPER --- */
+        /* --- SIDEWAYS (LANDSCAPE) ENVELOPE --- */
         .envelope-wrapper {
             position: relative;
-            width: 350px;
-            height: 250px;
-            margin-top: 150px; /* Space for the card to slide up */
+            width: 440px;
+            height: 280px; /* Wider than it is tall */
             cursor: pointer;
+            perspective: 1000px;
         }
 
-        /* Base envelope background */
-        .envelope-base {
+        .envelope-part {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #d4c5b9;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            z-index: 1;
+            inset: 0;
+            border-radius: 4px;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Front flaps of the envelope */
-        .envelope-base::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 125px 175px;
-            border-color: transparent #e6dacd #dfd0c1 #e6dacd;
-            border-radius: 0 0 8px 8px;
-            z-index: 3;
-        }
-
+        .envelope-back { background: #d4c5b9; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1; }
+        
+        /* Flaps overlap to prevent gaps */
+        .envelope-front-left { background: #e6dacd; clip-path: polygon(0 0, 52% 50%, 0 100%); z-index: 4; }
+        .envelope-front-right { background: #e4d6c7; clip-path: polygon(100% 0, 48% 50%, 100% 100%); z-index: 4; }
+        .envelope-front-bottom { background: #dfd0c1; clip-path: polygon(0 100%, 50% 48%, 100% 100%); z-index: 5; }
+        
         /* Top opening flap */
         .envelope-flap {
-            position: absolute;
-            top: 0; left: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 130px 175px 0 175px;
-            border-color: #c9b7a7 transparent transparent transparent;
-            transform-origin: top center;
+            background: #c9b7a7;
+            clip-path: polygon(0 0, 100% 0, 50% 55%);
+            transform-origin: top;
+            z-index: 6;
             transition: transform 0.6s ease-in-out, z-index 0.6s;
-            z-index: 4;
         }
 
-        /* --- THE INVITATION CARD --- */
+        /* --- CARDS CONTAINER --- */
+        .card-container {
+            position: absolute;
+            /* Cards fit perfectly inside the horizontal envelope */
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            z-index: 2;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s;
+        }
+
         .card {
             position: absolute;
-            bottom: 5px;
-            left: 5%;
-            width: 90%;
-            height: 480px; /* Taller card that scrolls */
+            inset: 0;
             background-color: #f8f7f2;
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            border-radius: 4px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 2;
+            border-radius: 3px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             padding: 20px;
             box-sizing: border-box;
             text-align: center;
             overflow-y: auto;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s; /* Delays slide until flap opens */
-        }
-
-        /* Custom Scrollbar for the card */
-        .card::-webkit-scrollbar {
-            width: 4px;
-        }
-        .card::-webkit-scrollbar-thumb {
-            background-color: #ccc;
-            border-radius: 4px;
-        }
-
-        /* --- ANIMATION ON HOVER --- */
-        .envelope-wrapper:hover .envelope-flap {
-            transform: rotateX(180deg);
-            z-index: 1;
-        }
-        .envelope-wrapper:hover .card {
-            transform: translateY(-280px);
-            z-index: 5;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
-
-        /* --- TYPOGRAPHY & ELEMENTS --- */
-        .script-title {
-            font-family: 'Alex Brush', cursive;
-            font-size: 2.8rem;
-            margin: 0;
-            color: #2c2c2c;
-        }
-        .subtitle {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            line-height: 1.5;
-            margin: 10px 0;
-            text-transform: uppercase;
-        }
-        h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            margin-top: 25px;
-            text-transform: uppercase;
-        }
-        p {
-            font-size: 0.8rem;
-            line-height: 1.5;
-            margin: 10px 0;
-        }
-        .divider {
-            width: 40px;
-            height: 1px;
-            background-color: #ccc;
-            margin: 20px auto;
-        }
-
-        /* --- GOOGLE FORM RSVP BUTTONS --- */
-        .rsvp-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .rsvp-btn {
-            background: transparent;
-            border: 1px solid #000;
-            padding: 10px 15px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
-            text-transform: uppercase;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: #000;
         }
-        .rsvp-btn:hover {
-            background-color: #000;
-            color: #fff;
+        .card::-webkit-scrollbar { display: none; }
+
+        /* --- ANIMATION STATES --- */
+        
+        /* 1. Open Flap */
+        .is-opened .envelope-flap, .is-pulled .envelope-flap, .is-viewing .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* Flap drops behind */
         }
+
+        /* 2. Pull Cards Up */
+        .is-pulled .card-container { 
+            transform: translateY(-115%); 
+            z-index: 10; /* Bring above envelope front flaps */
+        }
+
+        /* 3. Drop down to sit ON TOP of envelope */
+        .is-viewing .envelope-flap { 
+            transform: rotateX(180deg); 
+        }
+        .is-viewing .card-container {
+            /* Adjust this Y value to change how high up the cards sit */
+            transform: translateY(-60px); 
+            z-index: 10; /* Ensure they stay on top of all envelope parts */
+        }
+
+        /* Mobile Layout */
+        @media (max-width: 900px) {
+            .is-viewing .envelope-part { transform: translateY(60%) scale(0.9); }
+            .is-viewing .envelope-flap { transform: translateY(60%) scale(0.9) rotateX(180deg); }
+            .is-viewing .card-container { transform: translateY(-40%); }
+        }
+
+        /* --- TYPOGRAPHY & LAYOUT --- */
+        .script-title { font-family: 'Alex Brush', cursive; font-size: 2.4rem; margin: 0; color: #2c2c2c; }
+        .subtitle { font-family: 'Playfair Display', serif; font-size: 0.75rem; letter-spacing: 2px; line-height: 1.5; margin: 5px 0; text-transform: uppercase; }
+        h3 { font-family: 'Playfair Display', serif; font-size: 0.85rem; letter-spacing: 1px; margin-top: 10px; margin-bottom: 5px; text-transform: uppercase; }
+        p { font-size: 0.75rem; line-height: 1.4; margin: 8px 0; }
+        .divider { width: 40px; height: 1px; background-color: #ccc; margin: 15px auto; }
+        .click-hint { font-size: 0.7rem; color: #888; font-style: italic; position: absolute; bottom: 15px; width: calc(100% - 40px); }
+
+        /* Layout specific for Landscape Cards */
+        .row { display: flex; justify-content: space-between; text-align: left; gap: 15px; }
+        .col { flex: 1; }
+
+        /* --- FORM STYLES --- */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 0.75rem; margin-bottom: 5px; font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; font-family: 'Montserrat', sans-serif; box-sizing: border-box; background: transparent; }
+        .submit-btn { background: #2c2c2c; color: #fff; border: none; padding: 10px; width: 100%; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; margin-top: 5px; }
+        .submit-btn:hover { background: #000; }
     </style>
 </head>
 <body>
 
-    <div class="envelope-wrapper">
-        <div class="envelope-base"></div>
-        <div class="envelope-flap"></div>
-        
-        <div class="card">
-            <h1 class="script-title">Save the Date</h1>
-            <p class="subtitle">To celebrate the Nikkah of<br>Anam Ali and Nabeel Khan</p>
-            <p style="font-family: 'Playfair Display', serif;">10 . 17 . 2026</p>
-            
-            <div class="divider"></div>
+    <!-- Hidden iframe to process Google Form silently -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){ showSuccess(); }"></iframe>
 
-            <!-- Wired to your Google Form -->
-            <div class="rsvp-container">
-                <a href="https://forms.gle/pvfczdNPcHRor2WHA" target="_blank" class="rsvp-btn">Will Attend</a>
-                <a href="https://forms.gle/pvfczdNPcHRor2WHA" target="_blank" class="rsvp-btn">Will Not Attend</a>
+    <div class="envelope-wrapper" id="envelope">
+        <div class="envelope-part envelope-back"></div>
+        
+        <div class="card-container" id="card-container">
+            
+            <!-- CARD 3: RSVP NATIVE FORM -->
+            <div class="card rsvp-card">
+                <h1 class="script-title" style="font-size: 1.8rem;">RSVP</h1>
+                <div class="divider" style="margin: 10px auto;"></div>
+
+                <form id="rsvp-form" action="https://docs.google.com/forms/d/e/1FAIpQLSf09kWC-u_xhY9YJzoItyzG7QPpfNBROEpxh01nikLK9WbiCg/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+                    <div class="row">
+                        <div class="col form-group">
+                            <label>First & Last Name</label>
+                            <input type="text" name="entry.116449056" required>
+                        </div>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label>Phone Number</label>
+                            <input type="tel" name="entry.2014318280" required>
+                        </div>
+                        <div class="col form-group">
+                            <label>Will you be attending?</label>
+                            <select name="entry.2023552627" required>
+                                <option value="" disabled selected>Select an option</option>
+                                <option value="Nikkah 2:30-3:30 pm">Nikkah only</option>
+                                <option value="Dinner 5:00-11:00 pm">Dinner only</option>
+                                <option value="Both Nikkah and Dinner">Both Nikkah and Dinner</option>
+                                <option value="You hate us">Not Attending</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Send RSVP</button>
+                </form>
+                
+                <div id="success-msg" style="display:none; margin-top: 20px;">
+                    <h3 style="font-size: 1.2rem;">Thank You!</h3>
+                    <p>Your response has been successfully recorded.</p>
+                </div>
             </div>
 
-            <p>Welcome to our Nikkah! Join us at the Islamic Center of Melville from 2:30pm-3:30pm. Afterwards, join us as we celebrate at Shirazi restaurant from 5pm-11pm.</p>
+            <!-- CARD 2: DETAILS -->
+            <div class="card">
+                <h1 class="script-title" style="font-size: 1.8rem;">Details</h1>
+                <p style="margin-top: 5px;">Join us at the Islamic Center for the Nikkah (2:30pm-3:30pm), followed by a celebration at Shirazi restaurant (5:00pm-11:00pm).</p>
+                
+                <div class="row" style="margin-top: 15px;">
+                    <div class="col">
+                        <h3>Islamic Center of Melville</h3>
+                        <p>118 Old East Neck Rd<br>Melville, NY 11747</p>
+                        <p style="font-size: 0.65rem; color: #555;"><em>Note: Please wear a head scarf and dress modestly.</em></p>
+                    </div>
+                    <div class="col">
+                        <h3>Shirazi Restaurant</h3>
+                        <p>184-02 Horace Harding Expy<br>Fresh Meadows, NY 11365</p>
+                        <p style="font-size: 0.65rem; color: #555;"><em>Note: Valet parking is available.</em></p>
+                    </div>
+                </div>
+                <div class="click-hint">Tap to RSVP</div>
+            </div>
 
-            <h3>Locations</h3>
-            <p><strong>Islamic Center of Melville</strong><br>118 Old East Neck Rd<br>Melville, NY 11747</p>
-            <p><strong>Shirazi Restaurant</strong><br>184-02 Horace Harding Expy<br>Fresh Meadows, NY 11365</p>
-
-            <h3>Details</h3>
-            <p><strong>For the Mosque -</strong> It is recommended that women wear a head scarf and dress modestly.</p>
-            <p><strong>At Shirazi,</strong> we will have valet parking available for everyone.</p>
-
-            <br><br>
+            <!-- CARD 1: MAIN INVITE -->
+            <div class="card">
+                <br>
+                <h1 class="script-title">Save the Date</h1>
+                <p class="subtitle">To celebrate the Nikkah of<br>Anam Ali and Nabeel Khan</p>
+                <div class="divider"></div>
+                <p style="font-family: 'Playfair Display', serif;">10 . 17 . 2026</p>
+                
+                <div class="click-hint">Tap card to view details</div>
+            </div>
         </div>
+
+        <div class="envelope-part envelope-front-left"></div>
+        <div class="envelope-part envelope-front-right"></div>
+        <div class="envelope-part envelope-front-bottom"></div>
+        <div class="envelope-part envelope-flap"></div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const envelope = document.getElementById('envelope');
+        const cards = Array.from(document.querySelectorAll('.card'));
+        let state = 'closed';
+        let cardOrder = [0, 1, 2]; 
+
+        function updateCardStacking() {
+            cards.forEach((card, index) => {
+                const stackPosition = cardOrder.indexOf(index);
+                card.style.zIndex = stackPosition;
+                
+                if (stackPosition === 2) {
+                    card.style.transform = `scale(1) translateY(0)`;
+                    card.style.opacity = '1';
+                } else if (stackPosition === 1) {
+                    card.style.transform = `scale(0.95) translateY(12px)`;
+                    card.style.opacity = '0.9';
+                } else {
+                    card.style.transform = `scale(0.90) translateY(24px)`;
+                    card.style.opacity = '0.7';
+                }
+            });
+        }
+        updateCardStacking();
+
+        envelope.addEventListener('click', () => {
+            if (state === 'closed') {
+                state = 'animating';
+                envelope.classList.add('is-opened');
+                setTimeout(() => {
+                    envelope.classList.remove('is-opened');
+                    envelope.classList.add('is-pulled');
+                }, 500);
+                setTimeout(() => {
+                    envelope.classList.remove('is-pulled');
+                    envelope.classList.add('is-viewing');
+                    state = 'viewing';
+                }, 1200);
+            }
+        });
+
+        cards.forEach((card) => {
+            card.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                if (['INPUT', 'SELECT', 'BUTTON', 'LABEL'].includes(e.target.tagName)) {
+                    return; 
+                }
+
+                if (state !== 'viewing') return; 
+
+                const clickedIndex = cards.indexOf(card);
+                if (cardOrder.indexOf(clickedIndex) !== 2) return;
+
+                const topCard = cardOrder.pop();
+                cardOrder.unshift(topCard);
+
+                // Toss card up and away to cycle
+                card.style.transform = `translateY(-120%) scale(0.9) rotate(5deg)`;
+                card.style.opacity = '0';
+
+                setTimeout(() => { updateCardStacking(); }, 300);
+            });
+        });
+
+        // Form submission success handling
+        let submitted = false;
+        function showSuccess() {
+            document.getElementById('rsvp-form').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
